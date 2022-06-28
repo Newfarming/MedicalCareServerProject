@@ -52,8 +52,8 @@ class ActivityInfo(models.Model):
     lasting_time = models.CharField(verbose_name="持续时间", max_length=64)
     score = models.CharField(verbose_name="积分", max_length=64)
     status_choices = (
-        (1, "未开始"),
-        (2, "进行中"),
+        (0, "未开始"),
+        (1, "进行中"),
         (2, "已结束"),
     )
     activity_status = models.SmallIntegerField(verbose_name="活动状态", choices=status_choices)

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, HttpResponse
 from django.views import View
 from util.medicalCare_db import insertUser, editUser, deleteUser, userList, insertDepart, editDepart, deleteDepart, \
-    departList, insertActivity, editActivity, deleteActivity, activityList, userInfo
+    departList, insertActivity, editActivity, deleteActivity, activityList, userInfo, departInfo, activityInfo
 from django.core import serializers
 from django.http import JsonResponse
 import jwt
@@ -61,7 +61,11 @@ class UserEdit(View):
         rst = query_userinfo(request)
         uid = request.GET.get("id")
         editUser(uid, rst)
-        return HttpResponse('get UserEdit Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class UserDelete(View):
@@ -72,14 +76,15 @@ class UserDelete(View):
         # data = json.loads(request.body.decode('utf-8'))
         uid = request.GET.get("id")
         deleteUser(uid)
-        return HttpResponse('get UserDelete Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class UserList(View):
     def post(self, request):
-        rst = {}
-        print('request search')
-        print(request.GET.get('search'))
         return HttpResponse('post Userlist')
 
     def get(self, request):
@@ -110,18 +115,11 @@ class DepartAdd(View):
         # data = json.loads(request.body.decode('utf-8'))
         rst = {'title': request.GET.get('title')}
         insertDepart(rst)
-        return HttpResponse('get DepartAdd Success')
-
-
-class UserInfo(View):
-    def post(self, request):
-        return HttpResponse('post UserInfo')
-
-    def get(self, request):
-        # data = json.loads(request.body.decode('utf-8'))
-        rst = {'title': request.GET.get('title')}
-        insertDepart(rst)
-        return HttpResponse('get UserInfo Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class DepartEdit(View):
@@ -133,7 +131,11 @@ class DepartEdit(View):
         rst = {'title': request.GET.get('title')}
         nid = request.GET.get("id")
         editDepart(nid, rst)
-        return HttpResponse('get UserEdit Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class DepartDelete(View):
@@ -144,7 +146,11 @@ class DepartDelete(View):
         # data = json.loads(request.body.decode('utf-8'))
         nid = request.GET.get("id")
         deleteDepart(nid)
-        return HttpResponse('get UserDelete Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class DepartList(View):
@@ -168,6 +174,25 @@ class DepartList(View):
         }, safe=False)
 
 
+class DepartDetails(View):
+    def post(self, request):
+        return HttpResponse('post UserDetails')
+
+    def get(self, request):
+        get_obj = {
+            'id': request.GET.get('id'),
+        }
+        depart_obj = departInfo(get_obj)
+        return JsonResponse({
+                'message': 'success',
+                'code': 20000,
+                'data': {
+                    'title': depart_obj.title,
+                    'id': depart_obj.id
+                }
+            }, safe=False)
+
+
 def query_activityinfo(request):
     rst = {}
     # if request.GET.get("id"):
@@ -185,6 +210,31 @@ def query_activityinfo(request):
     if request.GET.get("activity_status"):
         rst['activity_status'] = request.GET.get("activity_status")
     return rst
+
+
+class ActivityDetails(View):
+    def post(self, request):
+        return HttpResponse('post ActivityDetails')
+
+    def get(self, request):
+        get_obj = {
+            'id': request.GET.get('id'),
+        }
+        activity_obj = activityInfo(get_obj)
+        return JsonResponse({
+                'message': 'success',
+                'code': 20000,
+                'data': {
+                    'name': activity_obj.name,
+                    'place': activity_obj.place,
+                    'start_time': activity_obj.start_time,
+                    'lasting_time': activity_obj.lasting_time,
+                    'score': activity_obj.score,
+                    'activity_status': activity_obj.activity_status,
+                    'id': activity_obj.id
+                }
+            }, safe=False)
+
 
 
 class ActivityAdd(View):
@@ -235,8 +285,12 @@ class ActivityList(View):
             rst['pageStart'] = request.GET.get('pageStart')
         if request.GET.get('pagesize'):
             rst['pagesize'] = request.GET.get('pagesize')
-        data = serializers.serialize("json", activityList(rst))
-        return HttpResponse(data, content_type="application/json")
+        data_dict = json.loads(serializers.serialize("json", activityList(rst)))
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': data_dict
+        }, safe=False)
 
 
 mock_users = {
@@ -306,20 +360,13 @@ class User_Info(View):
 
     def get(self, request):
         token = request.GET.get('token')
-        print('token')
-        print(token)
         decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
-        print('decode_token')
-        print(decode_token)
         # token_obj = json.loads(decode_token)
         # print(str(token_obj))
         get_obj = {
             'id': decode_token['id'],
         }
         user_obj = userInfo(get_obj)
-
-        print('User_Info user_obj.phone')
-        print(user_obj.phone)
         data_dict = {
             'roles': ['admin'],
             'introduction': 'I am a super administrator',
@@ -330,6 +377,31 @@ class User_Info(View):
                 'message': 'success',
                 'code': 20000,
                 'data': data_dict
+            }, safe=False)
+
+
+class UserDetails(View):
+    def post(self, request):
+        return HttpResponse('post UserDetails')
+
+    def get(self, request):
+        get_obj = {
+            'id': request.GET.get('id'),
+        }
+        user_obj = userInfo(get_obj)
+        return JsonResponse({
+                'message': 'success',
+                'code': 20000,
+                'data': {
+                    'username': user_obj.username,
+                    'name': user_obj.name,
+                    'phone': user_obj.phone,
+                    'workNo': user_obj.workNo,
+                    'depart_id': user_obj.depart_id,
+                    'identityCard': user_obj.identityCard,
+                    'id': user_obj.id,
+                    'password': user_obj.password
+                }
             }, safe=False)
 
 

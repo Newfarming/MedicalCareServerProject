@@ -36,6 +36,10 @@ def userList(data_dict):
     return user_set
 
 
+def departInfo(data_dict):
+    return Department.objects.filter(**data_dict).first()
+
+
 def insertDepart(data_dict):
     Department.objects.create(**data_dict)
 
@@ -57,6 +61,10 @@ def departList(data_dict):
         depart_set = Department.objects.all()
     depart_set = depart_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
     return depart_set
+
+
+def activityInfo(data_dict):
+    return ActivityInfo.objects.filter(**data_dict).first()
 
 
 def insertActivity(data_dict):
