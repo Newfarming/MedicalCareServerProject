@@ -11,6 +11,18 @@ class Department(models.Model):
         return self.title
 
 
+# 权限说明 1:用户新增 '/user/add' 2:用户删除 '/user/delete' 3:用户查找 '/user/list' '/user/details' 4:用户修改 '/user/edit' 5:部门新增
+# '/depart/add' 6:部门删除 '/depart/delete' 7:部门查找 '/depart/list' '/depart/details' 8:部门修改 '/depart/edit' 9:活动新增
+# '/activity/add' 10:活动删除 '/activity/delete' 11:活动查找 '/activity/list' '/activity/details' 12:活动修改 '/activity/edit'
+class Permission(models.Model):
+    # 权限表
+    name = models.CharField(verbose_name="权限名称", max_length=255)
+    content_type = models.CharField(verbose_name="权限内容", max_length=255, default="")
+
+    def __str__(self):
+        return self.name
+
+
 class UserInfo(models.Model):
     """员工"""
     username = models.CharField(verbose_name="用户名", max_length=32)
@@ -22,26 +34,10 @@ class UserInfo(models.Model):
     # 外键 自动生成的字段名为: depart_id,_id是django自动添加的
     # 如果 部门表被删除, 则级联删除
     depart = models.ForeignKey(verbose_name="部门", to="Department", to_field="id", on_delete=models.CASCADE)
+    permission = models.ForeignKey(verbose_name="部门", to="Permission", to_field="id", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.username
-
-
-class Permission(models.Model):
-    name = models.CharField(verbose_name="权限名称", max_length=255)
-    content_type = models.CharField(verbose_name="权限内容", max_length=64, default="")
-    # codename = models.CharField(verbose_name="codename", max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
-# class ContentType(models.Model):
-#     app_label = models.CharField(verbose_name="app_label", max_length=255)
-#     api = models.CharField(verbose_name="api接口", max_length=255)
-#
-#     def __str__(self):
-#         return self.app_label
 
 
 class ActivityInfo(models.Model):

@@ -99,11 +99,28 @@ class UserList(View):
             rst['pageStart'] = request.GET['pageStart']
         if request.GET.get('pagesize'):
             rst['pagesize'] = request.GET['pagesize']
-        data_dict = json.loads(serializers.serialize("json", userList(rst)))
+        # data_array = json.loads(serializers.serialize("json", userList(rst)))
+        userlist_set = userList(rst)
+        return_arr = []
+        for index in range(len(userlist_set)):
+            # print(index, data_array[index]['pk'])
+            return_arr.append({
+                'id': userlist_set[index].pk,
+                'name': userlist_set[index].name,
+                'username': userlist_set[index].username,
+                'phone': userlist_set[index].phone,
+                'workNo': userlist_set[index].workNo,
+                'identityCard': userlist_set[index].identityCard,
+                'depart_id': userlist_set[index].depart.id,
+                'depart_name': userlist_set[index].depart.title,
+                'permission_id': userlist_set[index].permission.id,
+                'permission_name': userlist_set[index].permission.name,
+                'permission_content': userlist_set[index].permission.content_type,
+            })
         return JsonResponse({
                 'message': 'success',
                 'code': 20000,
-                'data': data_dict
+                'data': return_arr
             }, safe=False)
 
 
@@ -398,6 +415,10 @@ class UserDetails(View):
                     'phone': user_obj.phone,
                     'workNo': user_obj.workNo,
                     'depart_id': user_obj.depart_id,
+                    'depart_name': user_obj.depart.title,
+                    'permission_id': user_obj.permission_id,
+                    'permisstion_name': user_obj.permission.name,
+                    'permisstion_content': user_obj.permission.content_type,
                     'identityCard': user_obj.identityCard,
                     'id': user_obj.id,
                     'password': user_obj.password
