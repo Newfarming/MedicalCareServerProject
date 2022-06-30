@@ -30,7 +30,8 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:9528'
 )
 CORS_ALLOW_HEADERS = [
-    "M-Token"
+    "M-Token",
+    'token'
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'MedicalCareServerApp.middleware.auth.AuthMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
 
