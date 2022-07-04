@@ -11,7 +11,8 @@ from datetime import datetime, timedelta
 from django.shortcuts import render, HttpResponse
 from django.views import View
 from util.medicalCare_db import insertUser, editUser, deleteUser, userList, insertDepart, editDepart, deleteDepart, \
-    departList, insertActivity, editActivity, deleteActivity, activityList, userInfo, departInfo, activityInfo
+    departList, insertActivity, editActivity, deleteActivity, activityList, userInfo, departInfo, activityInfo, \
+    permissionList
 from django.core import serializers
 from django.http import JsonResponse
 import jwt
@@ -34,6 +35,8 @@ def query_userinfo(request):
         rst['depart_id'] = request.GET.get("depart_id")
     if request.GET.get("password"):
         rst['password'] = request.GET.get("password")
+    if request.GET.get("permission_id"):
+        rst['permission_id'] = request.GET.get("permission_id")
     return rst
 
 
@@ -352,7 +355,13 @@ class UserLogin(View):
             'id': user_obj.id
         }
         encoded_token = jwt.encode(data_dict, "secret", algorithm="HS256")
-        return_obj = {'token': encoded_token}
+        return_obj = {
+            'token': encoded_token,
+            'superAdmin': user_obj.superAdmin,
+            'permission_name': user_obj.permission.name,
+            'permission_type': user_obj.permission.content_type,
+
+        }
         if user_obj:
             print('have user_obj')
             return_data = {
@@ -386,9 +395,11 @@ class User_Info(View):
         user_obj = userInfo(get_obj)
         data_dict = {
             'roles': ['admin'],
-            'introduction': 'I am a super administrator',
+            'introduction': '',
             'avatar': 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-            'name': 'Super Admin'
+            'name': user_obj.name,
+            'permission_name': user_obj.permission.name,
+            'permission_type': user_obj.permission.content_type,
           }
         return JsonResponse({
                 'message': 'success',
@@ -425,4 +436,24 @@ class UserDetails(View):
                 }
             }, safe=False)
 
+
+class PermissionList(View):
+    def post(self, request):
+        return HttpResponse('post UserList')
+
+    def get(self, request):
+        rst = {}
+        if request.GET.get('search'):
+            rst['search'] = request.GET.get('search')
+            rst['search_type'] = 'title'
+        if request.GET.get('pageStart'):
+            rst['pageStart'] = request.GET.get('pageStart')
+        if request.GET.get('pagesize'):
+            rst['pagesize'] = request.GET.get('pagesize')
+        data_dict = json.loads(serializers.serialize("json", permissionList(rst)))
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': data_dict
+        }, safe=False)
 

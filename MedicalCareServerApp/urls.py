@@ -6,7 +6,7 @@ second-level interface(functions): send_sms_code, submit_form
 from django.urls import path
 from .views import UserAdd, UserEdit, UserList, UserDelete, DepartAdd, DepartEdit, DepartDelete, DepartList, \
     ActivityList, ActivityEdit, ActivityDelete, ActivityAdd, UserLogin, User_Info, UserDetails, DepartDetails, \
-    ActivityDetails
+    ActivityDetails, PermissionList
 
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path("activity/list", ActivityList.as_view(), name="activity_list"),
     path("activity/delete", ActivityDelete.as_view(), name="activity_delete"),
     path("activity/details", ActivityDetails.as_view(), name="depart_delete"),
+    path("permission/list", PermissionList.as_view(), name="PermissionList"),
 ]

@@ -1,5 +1,5 @@
 import pymysql,json
-from MedicalCareServerApp.models import UserInfo, Department, ActivityInfo
+from MedicalCareServerApp.models import UserInfo, Department, ActivityInfo, Permission
 
 
 def connect_db():
@@ -86,5 +86,16 @@ def activityList(data_dict):
         activity_set = ActivityInfo.objects.filter(**data_temp)
     else:
         activity_set = ActivityInfo.objects.all()
+    activity_set = activity_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
+    return activity_set
+
+
+def permissionList(data_dict):
+    data_temp = {}
+    if 'search' in data_dict:
+        data_temp[data_dict["search_type"] + '__contains'] = data_dict["search"]
+        activity_set = Permission.objects.filter(**data_temp)
+    else:
+        activity_set = Permission.objects.all()
     activity_set = activity_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
     return activity_set

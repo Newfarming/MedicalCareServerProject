@@ -34,8 +34,8 @@ class UserInfo(models.Model):
     # 外键 自动生成的字段名为: depart_id,_id是django自动添加的
     # 如果 部门表被删除, 则级联删除
     depart = models.ForeignKey(verbose_name="部门", to="Department", to_field="id", on_delete=models.CASCADE)
-    permission = models.ForeignKey(verbose_name="部门", to="Permission", to_field="id", on_delete=models.CASCADE)
-
+    permission = models.ForeignKey(verbose_name="权限", to="Permission", to_field="id", on_delete=models.CASCADE)
+    superAdmin = models.CharField(verbose_name="超级管理员", max_length=64, default='0')
     def __str__(self):
         return self.username
 

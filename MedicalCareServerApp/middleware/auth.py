@@ -21,20 +21,24 @@ class AuthMiddleware:
         # print('middleware token')
         # print(token)
         # return response
-        if request.path_info in ["/MedicalCareServerApp/user/login", "/MedicalCareServerApp/user/info"]:
+        if request.path_info in ["/MedicalCareServerApp/user/login", "/MedicalCareServerApp/user/info",
+                                 "/MedicalCareServerApp/permission/list"]:
             print('进入')
             return response
-        token = request.META.get("HTTP_TOKEN")
+        # token = request.META.get("HTTP_TOKEN")
+        g_token = request.GET.get('token')
         # print('middleware token')
         # print(token)
-        if not token:
+        print('middleware g_token')
+        print(g_token)
+        if not g_token:
             return JsonResponse({
                 'message': '权限认证失败，没有token',
                 'code': 20000,
                 'data': 'fail'
             }, safe=False)
 
-        decode_token = jwt.decode(token, "secret", algorithms=["HS256"])
+        decode_token = jwt.decode(g_token, "secret", algorithms=["HS256"])
         get_obj = {
             'id': decode_token['id'],
         }
@@ -68,6 +72,19 @@ class AuthMiddleware:
                 return response
         if request.path_info in ["/MedicalCareServerApp/depart/edit"]:
             if '8' in permission_content:
+                return response
+        if request.path_info in ["/MedicalCareServerApp/activity/add"]:
+            if '9' in permission_content:
+                return response
+        if request.path_info in ["/MedicalCareServerApp/activity/delete"]:
+            if '10' in permission_content:
+                return response
+        if request.path_info in ["/MedicalCareServerApp/activity/list", "/MedicalCareServerApp/activity/details"]:
+            print('depart List middleware')
+            if '11' in permission_content:
+                return response
+        if request.path_info in ["/MedicalCareServerApp/activity/edit"]:
+            if '12' in permission_content:
                 return response
 
 
