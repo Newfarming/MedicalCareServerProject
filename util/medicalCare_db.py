@@ -32,7 +32,7 @@ def userList(data_dict):
         user_set = UserInfo.objects.filter(**data_temp)
     else:
         user_set = UserInfo.objects.all()
-    user_set = user_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
+    # user_set = user_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
     return user_set
 
 
@@ -59,7 +59,7 @@ def departList(data_dict):
         depart_set = Department.objects.filter(**data_temp)
     else:
         depart_set = Department.objects.all()
-    depart_set = depart_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
+    # depart_set = depart_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
     return depart_set
 
 
@@ -86,7 +86,7 @@ def activityList(data_dict):
         activity_set = ActivityInfo.objects.filter(**data_temp)
     else:
         activity_set = ActivityInfo.objects.all()
-    activity_set = activity_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
+    # activity_set = activity_set[slice(int(data_dict['pageStart']), int(data_dict['pageStart'])+int(data_dict['pagesize']))]
     return activity_set
 
 

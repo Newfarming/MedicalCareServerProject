@@ -103,8 +103,11 @@ class UserList(View):
         if request.GET.get('pagesize'):
             rst['pagesize'] = request.GET['pagesize']
         # data_array = json.loads(serializers.serialize("json", userList(rst)))
-        userlist_set = userList(rst)
+        user_set = userList(rst)
+        userlist_set = user_set[
+            slice(int(rst['pageStart']) * int(rst['pagesize']), (int(rst['pageStart'])+1) * int(rst['pagesize']))]
         return_arr = []
+        # dataLength =len(userlist_set)
         for index in range(len(userlist_set)):
             # print(index, data_array[index]['pk'])
             return_arr.append({
@@ -120,10 +123,12 @@ class UserList(View):
                 'permission_name': userlist_set[index].permission.name,
                 'permission_content': userlist_set[index].permission.content_type,
             })
+
         return JsonResponse({
                 'message': 'success',
                 'code': 20000,
-                'data': return_arr
+                'data': return_arr,
+                'total': len(user_set)
             }, safe=False)
 
 
@@ -265,7 +270,11 @@ class ActivityAdd(View):
         # data = json.loads(request.body.decode('utf-8'))
         rst = query_activityinfo(request)
         insertActivity(rst)
-        return HttpResponse('get ActivityAdd Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class ActivityEdit(View):
@@ -277,7 +286,11 @@ class ActivityEdit(View):
         rst = query_activityinfo(request)
         uid = request.GET.get("id")
         editActivity(uid, rst)
-        return HttpResponse('get ActivityEdit Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class ActivityDelete(View):
@@ -288,7 +301,11 @@ class ActivityDelete(View):
         # data = json.loads(request.body.decode('utf-8'))
         nid = request.GET.get("id")
         deleteActivity(nid)
-        return HttpResponse('get ActivityDelete Success')
+        return JsonResponse({
+            'message': 'success',
+            'code': 20000,
+            'data': 'success'
+        }, safe=False)
 
 
 class ActivityList(View):
@@ -305,11 +322,15 @@ class ActivityList(View):
             rst['pageStart'] = request.GET.get('pageStart')
         if request.GET.get('pagesize'):
             rst['pagesize'] = request.GET.get('pagesize')
-        data_dict = json.loads(serializers.serialize("json", activityList(rst)))
+        activitylist_set = activityList(rst)
+        activity_set = activitylist_set[
+            slice(int(rst['pageStart']) * int(rst['pagesize']), (int(rst['pageStart'])+1) * int(rst['pagesize']))]
+        data_dict = json.loads(serializers.serialize("json", activity_set))
         return JsonResponse({
             'message': 'success',
             'code': 20000,
-            'data': data_dict
+            'data': data_dict,
+            'total': len(activitylist_set)
         }, safe=False)
 
 
